@@ -34,8 +34,10 @@ import bdv.ui.CardPanel;
 import bdv.ui.appearance.AppearanceManager;
 import bdv.ui.keymap.KeymapManager;
 import bdv.ui.splitpanel.SplitPanel;
+import bdv.ui.viewermodepanel.DisplaySettingsPanel;
 import bdv.viewer.ConverterSetups;
-import java.awt.BorderLayout;
+
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -45,6 +47,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import bvv.core.render.TransferFunctionWidget;
 import org.scijava.ui.behaviour.MouseAndKeyHandler;
 import org.scijava.ui.behaviour.util.Behaviours;
 import org.scijava.ui.behaviour.util.InputActionBindings;
@@ -97,6 +100,7 @@ public class VolumeViewerFrame extends JFrame
 	 * @param optional
 	 *            optional parameters. See {@link VolumeViewerOptions}.
 	 */
+
 	public VolumeViewerFrame(
 			final List< SourceAndConverter< ? > > sources,
 			final int numTimepoints,
@@ -115,6 +119,7 @@ public class VolumeViewerFrame extends JFrame
 
 		cards = new CardPanel();
 		BdvDefaultCards.setup( cards, viewer, viewer.getConverterSetups() );
+		cards.addCard( "transfer function", "Transfer function", new TransferFunctionWidget(getViewerPanel().getTransferTexture() ), true, new Insets( 0, 4, 4, 0 ) );
 		splitPanel = new SplitPanel( viewer, cards );
 
 		getRootPane().setDoubleBuffered( true );

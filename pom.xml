@@ -124,6 +124,11 @@
 		<dependency>
 			<groupId>org.jogamp.gluegen</groupId>
 			<artifactId>gluegen-rt</artifactId>
+			<classifier>natives-linux-amd64</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.jogamp.gluegen</groupId>
+			<artifactId>gluegen-rt</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jogamp.jogl</groupId>
