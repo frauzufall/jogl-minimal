@@ -32,8 +32,10 @@ import bdv.TransformEventHandler;
 import bdv.ui.BdvDefaultCards;
 import bdv.ui.CardPanel;
 import bdv.ui.splitpanel.SplitPanel;
+import bdv.ui.viewermodepanel.DisplaySettingsPanel;
 import bdv.viewer.ConverterSetups;
-import java.awt.BorderLayout;
+
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -81,6 +83,7 @@ public class VolumeViewerFrame extends JFrame
 	 * @param optional
 	 *            optional parameters. See {@link VolumeViewerOptions}.
 	 */
+
 	public VolumeViewerFrame(
 			final List< SourceAndConverter< ? > > sources,
 			final int numTimepoints,
@@ -96,6 +99,7 @@ public class VolumeViewerFrame extends JFrame
 
 		cards = new CardPanel();
 		BdvDefaultCards.setup( cards, viewer, viewer.getConverterSetups() );
+		cards.addCard( "transfer function", "Transfer function", new TransferFunctionWidget(getViewerPanel().getTransferTexture() ), true, new Insets( 0, 4, 4, 0 ) );
 		splitPanel = new SplitPanel( viewer, cards );
 
 		final VolumeViewerOptions.Values options = optional.values;

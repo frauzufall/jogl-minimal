@@ -47,6 +47,7 @@ import static tpietzsch.multires.SourceStacks.SourceStackType.SIMPLE;
 
 import com.jogamp.opengl.GL3;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -241,6 +242,7 @@ public class VolumeRenderer
 			final OffScreenFrameBufferWithDepth sceneBuf,
 			final List< Stack3D< ? > > renderStacks,
 			final List< ConverterSetup > renderConverters,
+			final TransferFunctionTexture transferTexture,
 			final Matrix4f pv,
 			final int maxRenderMillis,
 			final double maxAllowedStepInVoxels )
@@ -295,13 +297,17 @@ public class VolumeRenderer
 			updateBlocks( context, multiResStacks, pv );
 
 			double minWorldVoxelSize = Double.POSITIVE_INFINITY;
+			if(transferTexture.needsUpdate()) {
+				transferTexture.upload(context);
+				transferTexture.setPleaseUpdate(false);
+			}
 			progvol = progvols.computeIfAbsent( new VolumeShaderSignature( volumeSignatures ), this::createMultiVolumeShader );
 			if ( progvol != null )
 			{
 				int mri = 0;
 				for ( int i = 0; i < renderStacks.size(); i++ )
 				{
-					progvol.setConverter( i, renderConverters.get( i ) );
+					progvol.setConverter( i, renderConverters.get( i ), transferTexture );
 					if ( volumeSignatures.get( i ).getSourceStackType() == MULTIRESOLUTION )
 					{
 						final VolumeBlocks volume = volumes.get( mri++ );

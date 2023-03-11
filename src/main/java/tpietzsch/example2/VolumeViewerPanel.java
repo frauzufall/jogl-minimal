@@ -70,6 +70,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -286,6 +287,9 @@ public class VolumeViewerPanel
 
 		this.cacheControl = cacheControl;
 		this.renderScene = renderScene;
+
+		this.transferTexture = new TransferFunctionTexture();
+		transferTexture.init(new int[]{200, 70});
 
 		final int numGroups = options.getNumSourceGroups();
 		final ArrayList< SourceGroup > groups = new ArrayList<>( numGroups );
@@ -914,6 +918,7 @@ public class VolumeViewerPanel
 	private double screenWidth;
 	private double screenHeight;
 	private double maxAllowedStepInVoxels;
+	private TransferFunctionTexture transferTexture;
 
 	public void setCamParams( final double dCam, final double dClip )
 	{
@@ -927,7 +932,15 @@ public class VolumeViewerPanel
 		this.dClipFar = dClipFar;
 	}
 
-	public void setMaxAllowedStepInVoxels( final double maxAllowedStepInVoxels )
+	public void setTransferTexture(TransferFunctionTexture transferTexture) {
+		this.transferTexture = transferTexture;
+	}
+
+	public TransferFunctionTexture getTransferTexture() {
+		return transferTexture;
+	}
+
+	public void setMaxAllowedStepInVoxels(final double maxAllowedStepInVoxels )
 	{
 		this.maxAllowedStepInVoxels = maxAllowedStepInVoxels;
 	}
@@ -1017,7 +1030,7 @@ public class VolumeViewerPanel
 			offscreen.bind( gl, false );
 			gl.glDisable( GL_DEPTH_TEST );
 			sceneBuf.drawQuad( gl );
-			final RepaintType rerender = renderer.draw( gl, type, sceneBuf, renderStacks, renderConverters, pv, maxRenderMillis, maxAllowedStepInVoxels );
+			final RepaintType rerender = renderer.draw( gl, type, sceneBuf, renderStacks, renderConverters, transferTexture, pv, maxRenderMillis, maxAllowedStepInVoxels );
 			repaint.request( rerender );
 			offscreen.unbind( gl, false );
 			offscreen.drawQuad( gl );

@@ -29,7 +29,6 @@
 package tpietzsch.example2;
 
 import bdv.tools.brightness.ConverterSetup;
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -252,7 +251,7 @@ public class MultiVolumeShaderMip
 				"volume", "sampleVolume" ) );
 		segments.put( SegmentType.Convert, new SegmentTemplate(
 				"convert.frag",
-				"convert", "offset", "scale" ) );
+				"convert", "offset", "scale", "transfer_fcn" ) );
 		segments.put( SegmentType.ConvertRGBA, new SegmentTemplate(
 				"convert_rgba.frag",
 				"convert", "offset", "scale" ) );
@@ -304,9 +303,9 @@ public class MultiVolumeShaderMip
 		sceneDepthTextureName = name;
 	}
 
-	public void setConverter( int index, ConverterSetup converter )
+	public void setConverter( int index, ConverterSetup converter, TransferFunctionTexture transferFunction )
 	{
-		converterSegments[ index ].setData( converter );
+		converterSegments[ index ].setData( converter, transferFunction );
 	}
 
 	/**
@@ -426,6 +425,7 @@ public class MultiVolumeShaderMip
 	{
 		private final Uniform4f uniformOffset;
 		private final Uniform4f uniformScale;
+		private final UniformSampler uniformTransferFcn;
 
 		private final PixelType pixelType;
 		private final double rangeScale;
@@ -434,6 +434,7 @@ public class MultiVolumeShaderMip
 		{
 			uniformOffset = prog.getUniform4f( segment,"offset" );
 			uniformScale = prog.getUniform4f( segment,"scale" );
+			uniformTransferFcn = prog.getUniformSampler( segment,"transfer_fcn" );
 
 			this.pixelType = pixelType;
 
@@ -450,7 +451,7 @@ public class MultiVolumeShaderMip
 			}
 		}
 
-		public void setData( ConverterSetup converter )
+		public void setData( ConverterSetup converter, TransferFunctionTexture transferFunction )
 		{
 			final double fmin = converter.getDisplayRangeMin() / rangeScale;
 			final double fmax = converter.getDisplayRangeMax() / rangeScale;
@@ -461,6 +462,7 @@ public class MultiVolumeShaderMip
 			{
 				uniformOffset.set( ( float ) o, ( float ) o, ( float ) o, ( float ) o );
 				uniformScale.set( ( float ) s, ( float ) s, ( float ) s, ( float ) s );
+				uniformTransferFcn.set( transferFunction );
 			}
 			else
 			{
@@ -482,6 +484,7 @@ public class MultiVolumeShaderMip
 						( float ) ( s * g ),
 						( float ) ( s * b ),
 						( float ) ( s ) );
+				uniformTransferFcn.set( transferFunction );
 			}
 		}
 	}
