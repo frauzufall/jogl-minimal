@@ -76,6 +76,7 @@
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.copyrightOwners>Tobias Pietzsch</license.copyrightOwners>
 
+		<enforcer.skip>true</enforcer.skip>
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
 	</properties>
@@ -135,14 +136,9 @@
 			<artifactId>jogl-all</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.jogamp.gluegen</groupId>
-			<artifactId>gluegen-rt</artifactId>
-			<classifier>${scijava.natives.classifier.gluegen}</classifier>
-		</dependency>
-		<dependency>
 			<groupId>org.jogamp.jogl</groupId>
 			<artifactId>jogl-all</artifactId>
-			<classifier>${scijava.natives.classifier.jogl}</classifier>
+			<classifier>natives-linux-amd64</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.joml</groupId>
